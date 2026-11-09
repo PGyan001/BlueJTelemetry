@@ -5,31 +5,28 @@ import bluej.extensions2.Extension;
 
 import org.example.telemetry.events.EventLog;
 
-import java.net.MalformedURLException;
-import java.net.URL;
-
 public class TelemetryExtension extends Extension{
 
     private final EventLog eventLog = new EventLog();
 
     @Override
     public boolean isCompatible() {
-        return true;
+        return getExtensionsAPIVersionMajor() >= 3;
     }
 
     @Override
     public void startup(BlueJ blueJ) {
-        System.out.println("[App] Extension started");
+        System.out.println("[BlueJTelemetry] Extension started");
     }
 
     @Override
     public String getName() {
-        return "Telemetry App";
+        return "Telemetry";
     }
 
     @Override
     public String getVersion() {
-        return "1.0";
+        return "1.0.0";
     }
 
     public EventLog getEventLog() {
