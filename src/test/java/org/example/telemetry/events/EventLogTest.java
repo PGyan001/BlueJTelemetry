@@ -7,7 +7,6 @@ import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-//
 class EventLogTest {
 
     @Test
