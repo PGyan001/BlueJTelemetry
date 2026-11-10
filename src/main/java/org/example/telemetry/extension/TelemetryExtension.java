@@ -3,6 +3,13 @@ package org.example.telemetry.extension;
 import bluej.extensions2.BlueJ;
 import bluej.extensions2.Extension;
 
+import org.example.telemetry.adapter.BlueJClassAdapter;
+import org.example.telemetry.adapter.BlueJCompileAdapter;
+import org.example.telemetry.adapter.BlueJInvocationAdapter;
+import org.example.telemetry.adapter.BlueJPackageAdapter;
+import org.example.telemetry.collector.CompileRecorder;
+import org.example.telemetry.collector.InvocationRecorder;
+import org.example.telemetry.collector.LifecycleRecorder;
 import org.example.telemetry.events.EventLog;
 
 public class TelemetryExtension extends Extension{
@@ -15,7 +22,10 @@ public class TelemetryExtension extends Extension{
     }
 
     @Override
-    public void startup(BlueJ blueJ) {
+    public void startup(BlueJ bluej) {
+        LifecycleRecorder lifecycle = new LifecycleRecorder(eventLog);
+        bluej.addPackageListener(new BlueJPackageAdapter(lifecycle));
+        bluej.addClassListener(new BlueJClassAdapter(lifecycle));
         System.out.println("[BlueJTelemetry] Extension started");
     }
 

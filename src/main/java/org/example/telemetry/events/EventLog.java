@@ -4,11 +4,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class EventLog {
+public class EventLog implements EventSink{
 
     private final List<TelemetryEvent> events = new ArrayList<>();
 
     // Synchronized for multithreading
+    @Override
     public synchronized void record(TelemetryEvent event) {
         if (event == null) {
             throw new IllegalArgumentException("event must not be null");

@@ -2,9 +2,14 @@ package org.example.telemetry.events;
 
 public enum EventType {
     PROJECT_CREATED,
+    PROJECT_OPENED,
+    PROJECT_CLOSED,
     CLASS_CREATED,
+    CLASS_MODIFIED,
+    CLASS_RENAMED,
     CLASS_DELETED,
     EDIT,
+    COMPILE_STARTED,
     COMPILE_SUCCESS,
     COMPILE_ERROR,
     PROGRAM_RUN,
