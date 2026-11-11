@@ -5,6 +5,12 @@ import bluej.extensions2.event.InvocationFinishedListener;
 import org.example.telemetry.collector.ExitStatus;
 import org.example.telemetry.collector.InvocationRecorder;
 
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
+import java.util.Arrays;
+
 public class BlueJInvocationAdapter implements InvocationFinishedListener {
 
     private final InvocationRecorder recorder;
@@ -19,6 +25,8 @@ public class BlueJInvocationAdapter implements InvocationFinishedListener {
         recorder.finished(
                 event.getClassName(),
                 event.getMethodName(),
+                event.getObjectName(),
+                event.getParameters(),
                 toStatus(event.getEventType()),
                 result == null ? "" : result.toString());
     }
