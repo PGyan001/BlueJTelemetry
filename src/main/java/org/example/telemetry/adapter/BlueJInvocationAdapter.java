@@ -5,36 +5,24 @@ import bluej.extensions2.event.InvocationFinishedListener;
 import org.example.telemetry.collector.ExitStatus;
 import org.example.telemetry.collector.InvocationRecorder;
 
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.StandardOpenOption;
-import java.util.Arrays;
-
 public class BlueJInvocationAdapter implements InvocationFinishedListener {
-
     private final InvocationRecorder recorder;
-
-    public BlueJInvocationAdapter(InvocationRecorder recorder) {
-        this.recorder = recorder;
-    }
+    public BlueJInvocationAdapter(InvocationRecorder recorder) { this.recorder = recorder;}
 
     @Override
     public void invocationFinished(InvocationFinishedEvent event) {
         Object result = event.getResult();
         recorder.finished(
-                event.getClassName(),
-                event.getMethodName(),
-                event.getObjectName(),
-                event.getParameters(),
-                toStatus(event.getEventType()),
-                result == null ? "" : result.toString());
+            event.getClassName(),
+            event.getMethodName(),
+            event.getObjectName(),
+            event.getParameters(),
+            toStatus(event.getEventType()),
+            result == null ? "" : result.toString());
     }
 
     private static ExitStatus toStatus(InvocationFinishedEvent.EventType type) {
-        if (type == null) {
-            return ExitStatus.UNKNOWN;
-        }
+        if (type == null) {return ExitStatus.UNKNOWN; }
         return switch (type) {
             case NORMAL_EXIT -> ExitStatus.NORMAL;
             case EXCEPTION_EXIT -> ExitStatus.EXCEPTION;
