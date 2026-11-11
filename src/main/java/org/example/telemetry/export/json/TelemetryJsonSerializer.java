@@ -6,15 +6,12 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import org.example.telemetry.aggregate.SessionMetadata;
 import org.example.telemetry.events.TelemetryEvent;
-
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
 public class TelemetryJsonSerializer {
-
     public static final String SCHEMA_VERSION = "1.0";
-
     private final Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
     public String serialize(SessionMetadata meta, List<TelemetryEvent> events) {

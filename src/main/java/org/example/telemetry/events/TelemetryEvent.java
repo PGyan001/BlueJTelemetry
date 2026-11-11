@@ -4,7 +4,6 @@ import java.time.Instant;
 import java.util.Map;
 
 public record TelemetryEvent(Instant timestamp, EventType type, Map<String, String> details) {
-
     public TelemetryEvent {
         if (timestamp == null || type == null) {
             throw new IllegalArgumentException("timestamp and type required");

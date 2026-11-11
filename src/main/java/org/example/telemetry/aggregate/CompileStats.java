@@ -11,9 +11,7 @@ public record CompileStats(long attempts, long successes, long failures) {
         return new CompileStats(attempts, successes, Math.max(0, attempts - successes));
     }
 
-    public double successRate() {
-        return attempts == 0 ? 0.0 : (double) successes / attempts;
-    }
+    public double successRate() { return attempts == 0 ? 0.0 : (double) successes / attempts;}
 }
 
 

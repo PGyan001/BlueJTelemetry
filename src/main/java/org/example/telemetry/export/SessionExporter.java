@@ -6,7 +6,6 @@ import org.example.telemetry.events.EventLog;
 import org.example.telemetry.events.TelemetryEvent;
 import org.example.telemetry.export.json.JsonFileWriter;
 import org.example.telemetry.export.json.TelemetryJsonSerializer;
-
 import java.io.IOException;
 import java.nio.file.Path;
 import java.time.Instant;
@@ -15,10 +14,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 public class SessionExporter {
-
-    private static final DateTimeFormatter STAMP =
-            DateTimeFormatter.ofPattern("yyyyMMdd-HHmmss").withZone(ZoneOffset.UTC);
-
+    private static final DateTimeFormatter STAMP = DateTimeFormatter.ofPattern("yyyyMMdd-HHmmss").withZone(ZoneOffset.UTC);
     private final EventLog log;
     private final Path outputDir;
     private final String studentId;
@@ -27,8 +23,7 @@ public class SessionExporter {
     private final TelemetryJsonSerializer serializer = new TelemetryJsonSerializer();
     private final JsonFileWriter writer = new JsonFileWriter();
 
-    public SessionExporter(EventLog log, Path outputDir, String studentId,
-                           String sessionId, Instant sessionStart) {
+    public SessionExporter(EventLog log,Path outputDir,String studentId,String sessionId,Instant sessionStart) {
         this.log = log;
         this.outputDir = outputDir;
         this.studentId = studentId;
@@ -40,11 +35,11 @@ public class SessionExporter {
         Instant end = Instant.now();
         List<TelemetryEvent> events = log.getEvents();
         SessionMetadata meta = new SessionMetadataBuilder()
-                .studentId(studentId)
-                .sessionId(sessionId)
-                .period(sessionStart, end)
-                .events(events)
-                .build();
+            .studentId(studentId)
+            .sessionId(sessionId)
+            .period(sessionStart, end)
+            .events(events)
+            .build();
         Path file = outputDir.resolve("telemetry-" + STAMP.format(end) + ".json");
         return writer.write(file, serializer.serialize(meta, events));
     }

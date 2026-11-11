@@ -2,14 +2,12 @@ package org.example.telemetry.aggregate;
 
 import org.example.telemetry.events.EventType;
 import org.example.telemetry.events.TelemetryEvent;
-
-import java.time.Duration;
 import java.time.Instant;
+import java.time.Duration;
 import java.util.List;
 import java.util.UUID;
 
 public class SessionMetadataBuilder {
-
     private String studentId = "STUDENT_ID_PLACEHOLDER";
     private String sessionId = UUID.randomUUID().toString();
     private Instant start = Instant.now();
@@ -49,11 +47,9 @@ public class SessionMetadataBuilder {
         long successes = count(EventType.COMPILE_SUCCESS);
         long failures = Math.max(0, attempts - successes);
         return new SessionMetadata(studentId, sessionId, start, end,
-                Duration.between(start, end).getSeconds(),
-                attempts, successes, failures, events.size());
+            Duration.between(start, end).getSeconds(),
+            attempts, successes, failures, events.size());
     }
 
-    private long count(EventType type) {
-        return events.stream().filter(e -> e.type() == type).count();
-    }
+    private long count(EventType type) { return events.stream().filter(e -> e.type() == type).count();}
 }

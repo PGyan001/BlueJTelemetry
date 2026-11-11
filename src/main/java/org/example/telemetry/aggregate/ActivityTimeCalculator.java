@@ -25,13 +25,10 @@ public class ActivityTimeCalculator {
         Duration idle = Duration.ZERO;
 
         for (int i = 1; i < relevant.size(); i++) {
-            TelemetryEvent prev = relevant.get(i - 1);
+            TelemetryEvent prev = relevant.get(i-1);
             Duration gap = Duration.between(prev.timestamp(), relevant.get(i).timestamp());
-            if (prev.type() != EventType.PROJECT_CLOSED && gap.compareTo(idleThreshold) <= 0) {
-                active = active.plus(gap);
-            } else {
-                idle = idle.plus(gap);
-            }
+            if (prev.type() != EventType.PROJECT_CLOSED && gap.compareTo(idleThreshold) <=0) { active = active.plus(gap);} 
+            else { idle = idle.plus(gap); }
         }
         return new ActivityTime(active, idle);
     }
@@ -43,14 +40,10 @@ public class ActivityTimeCalculator {
         List<TelemetryEvent> result = new ArrayList<>();
         Instant lastError = null;
         for (TelemetryEvent e : sorted) {
-            if (e.type() == EventType.COMPILE_ERROR) {
-                lastError = e.timestamp();
-            }
+            if (e.type() == EventType.COMPILE_ERROR) { lastError = e.timestamp(); }
             boolean errorNoise = e.type() == EventType.EDIT && lastError != null
                     && Duration.between(lastError, e.timestamp()).compareTo(ERROR_EDIT_WINDOW) <= 0;
-            if (!errorNoise) {
-                result.add(e);
-            }
+            if (!errorNoise) {result.add(e);}
         }
         return result;
     }

@@ -1,24 +1,15 @@
 package org.example.telemetry.events;
 
-import java.io.IOException; //
-import java.nio.charset.StandardCharsets; //
-import java.nio.file.Files; //
-import java.nio.file.Path; //
-import java.nio.file.StandardOpenOption; //
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 public class EventLog implements EventSink{
-
     private final List<TelemetryEvent> events = new ArrayList<>();
 
-    // Synchronized for multithreading
     @Override
     public synchronized void record(TelemetryEvent event) {
-        if (event == null) {
-            throw new IllegalArgumentException("event must not be null");
-        }
+        if (event == null) { throw new IllegalArgumentException("event must not be null");}
         events.add(event);
     }
 
