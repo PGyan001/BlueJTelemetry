@@ -19,4 +19,10 @@ class ErrorClassifierTest {
         assertEquals("OTHER", ErrorClassifier.classify("something strange"));
         assertEquals("OTHER", ErrorClassifier.classify(null));
     }
+
+    @Test
+    void classifiesStaticContextErrors() {
+        assertEquals("STATIC_CONTEXT",
+                ErrorClassifier.classify("non-static method test() cannot be referenced from a static context"));
+    }
 }

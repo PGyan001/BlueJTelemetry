@@ -13,13 +13,14 @@ class LifecycleRecorderTest {
         EventLog log = new EventLog();
         LifecycleRecorder r = new LifecycleRecorder(log);
 
-        r.classStateChanged("P", "Dog", false);
-        r.classStateChanged("P", "Dog", false);
-        r.classStateChanged("P", "Dog", true);
+        r.classStateChanged("P", "Dog", false);  // created
+        r.classStateChanged("P", "Dog", false);  // template change, swallowed
+        r.classStateChanged("P", "Dog", false);  // real edit
+        r.classStateChanged("P", "Dog", true);   // compiled
 
         assertEquals(1, log.countByType(EventType.CLASS_CREATED));
         assertEquals(2, log.countByType(EventType.CLASS_MODIFIED));
-        assertEquals(1, log.countByType(EventType.EDIT)); // only the uncompiled modification
+        assertEquals(1, log.countByType(EventType.EDIT));
     }
 
     @Test
@@ -59,14 +60,36 @@ class LifecycleRecorderTest {
     void projectEventsAreRecorded() {
         EventLog log = new EventLog();
         LifecycleRecorder r = new LifecycleRecorder(log);
-        r.projectOpened("P");
+        r.projectOpened("P", false);
         r.projectClosing(null);
         assertEquals(1, log.countByType(EventType.PROJECT_OPENED));
         assertEquals(1, log.countByType(EventType.PROJECT_CLOSED));
     }
 
     @Test
+    void classesAnnouncedBeforeProjectNameAreNotCreations() {
+        EventLog log = new EventLog();
+        LifecycleRecorder r = new LifecycleRecorder(log);
+
+        r.classStateChanged("", "Dog", true);    // reopen: ignored
+        r.classStateChanged("P", "Dog", false);  // first real change
+
+        assertEquals(0, log.countByType(EventType.CLASS_CREATED));
+        assertEquals(1, log.countByType(EventType.CLASS_MODIFIED));
+    }
+
+    @Test
     void rejectsNullSink() {
         assertThrows(NullPointerException.class, () -> new LifecycleRecorder(null));
+    }
+
+    @Test
+    void newlyCreatedProjectIsRecordedAsCreated() {
+        EventLog log = new EventLog();
+        LifecycleRecorder r = new LifecycleRecorder(log);
+        r.projectOpened("P", true);
+        r.projectOpened("Q", false);
+        assertEquals(1, log.countByType(EventType.PROJECT_CREATED));
+        assertEquals(1, log.countByType(EventType.PROJECT_OPENED));
     }
 }

@@ -14,6 +14,11 @@ public final class ErrorClassifier {
         RULES.put("already defined", "DUPLICATE_DECLARATION");
         RULES.put("unreachable", "UNREACHABLE_CODE");
         RULES.put("expected", "SYNTAX_ERROR");
+        RULES.put("non-static", "STATIC_CONTEXT");
+        RULES.put("cannot be applied", "WRONG_ARGUMENTS");
+        RULES.put("has private access", "ACCESS_ERROR");
+        RULES.put("does not override", "MISSING_OVERRIDE");
+        RULES.put("reached end of file", "SYNTAX_ERROR");
     }
 
     private ErrorClassifier() {}
