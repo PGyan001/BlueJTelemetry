@@ -1,0 +1,30 @@
+package org.example.telemetry.export.pdf;
+
+import com.lowagie.text.Document;
+import com.lowagie.text.DocumentException;
+import com.lowagie.text.Element;
+import com.lowagie.text.Font;
+import com.lowagie.text.FontFactory;
+import com.lowagie.text.Image;
+import com.lowagie.text.PageSize;
+import com.lowagie.text.Paragraph;
+import com.lowagie.text.Phrase;
+import com.lowagie.text.pdf.PdfPCell;
+import com.lowagie.text.pdf.PdfPTable;
+import com.lowagie.text.pdf.PdfWriter;
+import org.example.telemetry.aggregate.ActivityTime;
+import org.example.telemetry.aggregate.CompileStats;
+import org.example.telemetry.aggregate.DevelopmentTimeline;
+import org.example.telemetry.aggregate.ReportData;
+import org.example.telemetry.aggregate.SessionMetadata;
+import org.example.telemetry.export.ReportRenderer;
+
+import java.io.IOException;
+import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.time.Duration;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
+import java.util.Map;
