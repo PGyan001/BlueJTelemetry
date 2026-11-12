@@ -27,24 +27,29 @@ public class TelemetryExtension extends Extension{
     public boolean isCompatible() { return getExtensionsAPIVersionMajor() >= 3;}
 
     @Override
-    public void startup(BlueJ bluej) {
-        EventSink sink = new CompositeSink(eventLog,new FileDebugSink(Path.of(System.getProperty("user.home"), "telemetry-debug.txt")));
-        Path outputDir = bluej.getUserConfigDir().toPath().resolve("telemetry");
-        String studentId = bluej.getExtensionPropertyString("studentId", "STUDENT_ID_PLACEHOLDER");
-        SessionExporter exporter = new SessionExporter(eventLog, outputDir, studentId, sessionId, sessionStart);
+public void startup(BlueJ bluej) {
+    EventSink sink = new CompositeSink(eventLog,
+            new FileDebugSink(Path.of(System.getProperty("user.home"), "telemetry-debug.txt")));
 
-        Runnable autoExport = () -> {
-            try { exporter.exportJson();} 
-            catch (Exception e) { System.err.println("[Telemetry] Auto-export failed: " + e); }
-        };
+    Path outputDir = bluej.getUserConfigDir().toPath().resolve("telemetry");
+    String studentId = bluej.getExtensionPropertyString("studentId", "STUDENT_ID_PLACEHOLDER");
+    SessionExporter exporter = new SessionExporter(eventLog, outputDir, studentId, sessionId, sessionStart);
 
-        LifecycleRecorder lifecycle = new LifecycleRecorder(sink);
-        bluej.addPackageListener(new BlueJPackageAdapter(lifecycle, autoExport));
-        bluej.addClassListener(new BlueJClassAdapter(lifecycle));
-        bluej.addCompileListener(new BlueJCompileAdapter(new CompileRecorder(sink), new MethodRecorder(sink)));
-        bluej.addInvocationFinishedListener(new BlueJInvocationAdapter(new InvocationRecorder(sink)));
-        bluej.setMenuGenerator(new TelemetryMenuGenerator(exporter));
-    }
+    Runnable autoExport = () -> {
+        try {
+            exporter.exportAll();
+        } catch (Exception e) {
+            System.err.println("[Telemetry] Auto-export failed: " + e);
+        }
+    };
+
+    LifecycleRecorder lifecycle = new LifecycleRecorder(sink);
+    bluej.addPackageListener(new BlueJPackageAdapter(lifecycle, autoExport));
+    bluej.addClassListener(new BlueJClassAdapter(lifecycle));
+    bluej.addCompileListener(new BlueJCompileAdapter(new CompileRecorder(sink), new MethodRecorder(sink)));
+    bluej.addInvocationFinishedListener(new BlueJInvocationAdapter(new InvocationRecorder(sink)));
+    bluej.setMenuGenerator(new TelemetryMenuGenerator(exporter));
+}
 
     @Override
     public String getName() {return "Telemetry";}
