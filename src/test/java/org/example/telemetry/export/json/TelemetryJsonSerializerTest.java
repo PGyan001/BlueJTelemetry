@@ -8,32 +8,28 @@ import org.example.telemetry.aggregate.SessionMetadataBuilder;
 import org.example.telemetry.events.EventType;
 import org.example.telemetry.events.TelemetryEvent;
 import org.junit.jupiter.api.Test;
-
 import java.time.Instant;
 import java.util.List;
 import java.util.Map;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 class TelemetryJsonSerializerTest {
-
     private final Instant t0 = Instant.parse("2026-11-09T10:00:00Z");
 
     private List<TelemetryEvent> sample() {
         return List.of(
-                new TelemetryEvent(t0, EventType.COMPILE_STARTED, Map.of("files", "A.java")),
-                new TelemetryEvent(t0.plusSeconds(1), EventType.COMPILE_ERROR,
-                        Map.of("line", "5", "message", "';' expected \"quoted\"")),
-                new TelemetryEvent(t0.plusSeconds(5), EventType.COMPILE_STARTED, null),
-                new TelemetryEvent(t0.plusSeconds(6), EventType.COMPILE_SUCCESS, null));
+            new TelemetryEvent(t0, EventType.COMPILE_STARTED, Map.of("files", "A.java")),
+            new TelemetryEvent(t0.plusSeconds(1), EventType.COMPILE_ERROR, Map.of("line", "5", "message", "';' expected \"quoted\"")),
+            new TelemetryEvent(t0.plusSeconds(5), EventType.COMPILE_STARTED, null),
+            new TelemetryEvent(t0.plusSeconds(6), EventType.COMPILE_SUCCESS, null));
     }
 
     private SessionMetadata meta(List<TelemetryEvent> events) {
         return new SessionMetadataBuilder()
-                .studentId("s123")
-                .period(t0, t0.plusSeconds(60))
-                .events(events)
-                .build();
+            .studentId("s123")
+            .period(t0, t0.plusSeconds(60))
+            .events(events)
+            .build();
     }
 
     @Test
@@ -59,8 +55,7 @@ class TelemetryJsonSerializerTest {
     void specialCharactersSurviveRoundTrip() {
         List<TelemetryEvent> events = sample();
         String json = new org.example.telemetry.export.json.TelemetryJsonSerializer().serialize(meta(events), events);
-        JsonObject details = JsonParser.parseString(json).getAsJsonObject()
-                .getAsJsonArray("events").get(1).getAsJsonObject().getAsJsonObject("details");
+        JsonObject details = JsonParser.parseString(json).getAsJsonObject().getAsJsonArray("events").get(1).getAsJsonObject().getAsJsonObject("details");
         assertEquals("';' expected \"quoted\"", details.get("message").getAsString());
     }
 

@@ -19,9 +19,9 @@ class AggregatorsTest {
     @Test
     void shortGapsAreActiveAndLongGapsAreIdle() {
         List<TelemetryEvent> events = List.of(
-                ev(0, EventType.EDIT, null),
-                ev(30, EventType.EDIT, null),     // 30s gap: active
-                ev(200, EventType.EDIT, null));   // 170s gap: idle
+            ev(0, EventType.EDIT, null),
+            ev(30, EventType.EDIT, null),
+            ev(200, EventType.EDIT, null));
         ActivityTime t = new ActivityTimeCalculator(Duration.ofSeconds(60)).calculate(events);
         assertEquals(Duration.ofSeconds(30), t.active());
         assertEquals(Duration.ofSeconds(170), t.idle());
@@ -31,9 +31,9 @@ class AggregatorsTest {
     @Test
     void editRightAfterCompileErrorIsIgnored() {
         List<TelemetryEvent> events = List.of(
-                ev(0, EventType.COMPILE_ERROR, null),
-                ev(0, EventType.EDIT, null),
-                ev(10, EventType.EDIT, null));
+            ev(0, EventType.COMPILE_ERROR, null),
+            ev(0, EventType.EDIT, null),
+            ev(10, EventType.EDIT, null));
         ActivityTime t = new ActivityTimeCalculator(Duration.ofSeconds(60)).calculate(events);
         assertEquals(Duration.ofSeconds(10), t.active());
     }
@@ -41,8 +41,8 @@ class AggregatorsTest {
     @Test
     void timeAfterProjectCloseIsIdle() {
         List<TelemetryEvent> events = List.of(
-                ev(0, EventType.PROJECT_CLOSED, null),
-                ev(20, EventType.PROJECT_OPENED, null));
+            ev(0, EventType.PROJECT_CLOSED, null),
+            ev(20, EventType.PROJECT_OPENED, null));
         ActivityTime t = new ActivityTimeCalculator(Duration.ofSeconds(60)).calculate(events);
         assertEquals(Duration.ZERO, t.active());
         assertEquals(Duration.ofSeconds(20), t.idle());
@@ -64,11 +64,11 @@ class AggregatorsTest {
     @Test
     void errorFrequencySortedByCount() {
         List<TelemetryEvent> events = List.of(
-                ev(0, EventType.COMPILE_ERROR, Map.of("category", "SYNTAX_ERROR")),
-                ev(1, EventType.COMPILE_ERROR, Map.of("category", "CANNOT_FIND_SYMBOL")),
-                ev(2, EventType.COMPILE_ERROR, Map.of("category", "CANNOT_FIND_SYMBOL")),
-                ev(3, EventType.COMPILE_ERROR, null),
-                ev(4, EventType.EDIT, null));
+            ev(0, EventType.COMPILE_ERROR, Map.of("category", "SYNTAX_ERROR")),
+            ev(1, EventType.COMPILE_ERROR, Map.of("category", "CANNOT_FIND_SYMBOL")),
+            ev(2, EventType.COMPILE_ERROR, Map.of("category", "CANNOT_FIND_SYMBOL")),
+            ev(3, EventType.COMPILE_ERROR, null),
+            ev(4, EventType.EDIT, null));
         Map<String, Long> freq = new ErrorFrequencyAggregator().aggregate(events);
         assertEquals("CANNOT_FIND_SYMBOL", freq.keySet().iterator().next());
         assertEquals(2L, freq.get("CANNOT_FIND_SYMBOL"));
@@ -79,10 +79,10 @@ class AggregatorsTest {
     @Test
     void compileStatsAndSuccessRate() {
         List<TelemetryEvent> events = List.of(
-                ev(0, EventType.COMPILE_STARTED, null), ev(1, EventType.COMPILE_ERROR, null),
-                ev(2, EventType.COMPILE_STARTED, null), ev(3, EventType.COMPILE_SUCCESS, null),
-                ev(4, EventType.COMPILE_STARTED, null), ev(5, EventType.COMPILE_SUCCESS, null),
-                ev(6, EventType.COMPILE_STARTED, null), ev(7, EventType.COMPILE_SUCCESS, null));
+            ev(0, EventType.COMPILE_STARTED, null), ev(1, EventType.COMPILE_ERROR, null),
+            ev(2, EventType.COMPILE_STARTED, null), ev(3, EventType.COMPILE_SUCCESS, null),
+            ev(4, EventType.COMPILE_STARTED, null), ev(5, EventType.COMPILE_SUCCESS, null),
+            ev(6, EventType.COMPILE_STARTED, null), ev(7, EventType.COMPILE_SUCCESS, null));
         CompileStats s = CompileStats.from(events);
         assertEquals(4, s.attempts());
         assertEquals(3, s.successes());
@@ -98,9 +98,9 @@ class AggregatorsTest {
     @Test
     void classTimelineKeepsOnlyClassEventsInOrder() {
         List<TelemetryEvent> events = List.of(
-                ev(5, EventType.CLASS_DELETED, Map.of("class", "Dog")),
-                ev(1, EventType.CLASS_CREATED, Map.of("class", "Dog")),
-                ev(2, EventType.EDIT, Map.of("class", "Dog")));
+            ev(5, EventType.CLASS_DELETED, Map.of("class", "Dog")),
+            ev(1, EventType.CLASS_CREATED, Map.of("class", "Dog")),
+            ev(2, EventType.EDIT, Map.of("class", "Dog")));
         List<ClassTimeline.Entry> timeline = new ClassTimeline().build(events);
         assertEquals(2, timeline.size());
         assertEquals("CLASS_CREATED", timeline.get(0).action());

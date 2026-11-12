@@ -3,7 +3,6 @@ package org.example.telemetry.collector;
 import org.example.telemetry.events.EventLog;
 import org.example.telemetry.events.EventType;
 import org.junit.jupiter.api.Test;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 class LifecycleRecorderTest {
@@ -13,10 +12,10 @@ class LifecycleRecorderTest {
         EventLog log = new EventLog();
         LifecycleRecorder r = new LifecycleRecorder(log);
 
-        r.classStateChanged("P", "Dog", false);  // created
-        r.classStateChanged("P", "Dog", false);  // template change, swallowed
-        r.classStateChanged("P", "Dog", false);  // real edit
-        r.classStateChanged("P", "Dog", true);   // compiled
+        r.classStateChanged("P", "Dog", false);  
+        r.classStateChanged("P", "Dog", false);
+        r.classStateChanged("P", "Dog", false);
+        r.classStateChanged("P", "Dog", true);   
 
         assertEquals(1, log.countByType(EventType.CLASS_CREATED));
         assertEquals(2, log.countByType(EventType.CLASS_MODIFIED));
@@ -71,8 +70,8 @@ class LifecycleRecorderTest {
         EventLog log = new EventLog();
         LifecycleRecorder r = new LifecycleRecorder(log);
 
-        r.classStateChanged("", "Dog", true);    // reopen: ignored
-        r.classStateChanged("P", "Dog", false);  // first real change
+        r.classStateChanged("", "Dog", true);
+        r.classStateChanged("P", "Dog", false); 
 
         assertEquals(0, log.countByType(EventType.CLASS_CREATED));
         assertEquals(1, log.countByType(EventType.CLASS_MODIFIED));

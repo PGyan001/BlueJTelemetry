@@ -4,13 +4,10 @@ import org.example.telemetry.events.EventLog;
 import org.example.telemetry.events.EventType;
 import org.example.telemetry.events.TelemetryEvent;
 import org.junit.jupiter.api.Test;
-
 import java.util.List;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 class CompileRecorderTest {
-
     @Test
     void recordsStartedErrorAndSuccess() {
         EventLog log = new EventLog();

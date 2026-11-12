@@ -3,7 +3,6 @@ package org.example.telemetry.collector;
 import org.example.telemetry.events.EventLog;
 import org.example.telemetry.events.EventType;
 import org.junit.jupiter.api.Test;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 class InvocationRecorderTest {
@@ -56,8 +55,7 @@ class InvocationRecorderTest {
     @Test
     void exceptionOnObjectIsInstanceMethod() {
         EventLog log = new EventLog();
-        new InvocationRecorder(log).finished("Human", "", "human1", new String[0],
-                ExitStatus.EXCEPTION, "");
+        new InvocationRecorder(log).finished("Human", "", "human1", new String[0], ExitStatus.EXCEPTION, "");
 
         assertEquals("INSTANCE_METHOD", log.getEvents().get(0).details().get("kind"));
         assertEquals(1, log.countByType(EventType.RUNTIME_EXCEPTION));

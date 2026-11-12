@@ -24,9 +24,7 @@ public final class ErrorClassifier {
     private ErrorClassifier() {}
 
     public static String classify(String message) {
-        if (message == null) {
-            return "OTHER";
-        }
+        if (message == null) { return "OTHER";}
         String lower = message.toLowerCase();
         for (Map.Entry<String, String> rule : RULES.entrySet()) {
             if (lower.contains(rule.getKey())) {
