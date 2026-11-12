@@ -29,3 +29,12 @@ public class DevelopmentTimeline {
                 case CLASS_RENAMED -> entries.add(new Entry(e.timestamp(), "Class renamed", cls,
                         "was " + e.details().getOrDefault("oldName", "")));
                 case CLASS_DELETED -> entries.add(new Entry(e.timestamp(), "Class deleted", cls, ""));
+                case METHOD_DEFINED -> entries.add(new Entry(e.timestamp(), "Method defined", cls,
+                        e.details().getOrDefault("signature", "")));
+                default -> { }
+            }
+        }
+        entries.sort(Comparator.comparing(Entry::time));
+        return entries;
+    }
+}
