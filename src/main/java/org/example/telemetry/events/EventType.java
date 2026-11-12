@@ -8,6 +8,7 @@ public enum EventType {
     CLASS_MODIFIED,
     CLASS_RENAMED,
     CLASS_DELETED,
+    METHOD_DEFINED,
     EDIT,
     COMPILE_STARTED,
     COMPILE_SUCCESS,
