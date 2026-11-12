@@ -1,0 +1,31 @@
+package org.example.telemetry.adapter;
+
+import bluej.extensions2.event.CompileEvent;
+import bluej.extensions2.event.CompileListener;
+import org.example.telemetry.collector.CompileRecorder;
+import org.example.telemetry.collector.MethodRecorder;
+
+import java.io.File;
+import java.nio.file.Files;
+import java.util.Arrays;
+import java.util.List;
+
+public class BlueJCompileAdapter implements CompileListener {
+
+    private final CompileRecorder recorder;
+    private final MethodRecorder methodRecorder;
+
+    public BlueJCompileAdapter(CompileRecorder recorder, MethodRecorder methodRecorder) {
+        this.recorder = recorder;
+        this.methodRecorder = methodRecorder;
+    }
+
+    @Override
+    public void compileStarted(CompileEvent event) {
+        recorder.started(fileNames(event));
+    }
+
+    @Override
+    public void compileError(CompileEvent event) {
+        recorder.error(fileNames(event), event.getErrorLineNumber(), event.getErrorMessage());
+    }
