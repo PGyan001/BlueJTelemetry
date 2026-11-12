@@ -29,3 +29,7 @@ class TelemetryMenuGenerator extends MenuGenerator {
             } catch (Exception ex) {
                 new Alert(Alert.AlertType.ERROR, "Export failed: " + ex.getMessage()).showAndWait();
             }
+        });
+        return item;
+    }
+}

@@ -96,14 +96,20 @@ class AggregatorsTest {
     }
 
     @Test
-    void classTimelineKeepsOnlyClassEventsInOrder() {
+    void developmentTimelineKeepsClassAndMethodEventsInOrder() {
         List<TelemetryEvent> events = List.of(
             ev(5, EventType.CLASS_DELETED, Map.of("class", "Dog")),
+            ev(3, EventType.METHOD_DEFINED, Map.of("class", "Dog", "signature", "void bark()")),
             ev(1, EventType.CLASS_CREATED, Map.of("class", "Dog")),
-            ev(2, EventType.EDIT, Map.of("class", "Dog")));
-        List<ClassTimeline.Entry> timeline = new ClassTimeline().build(events);
-        assertEquals(2, timeline.size());
-        assertEquals("CLASS_CREATED", timeline.get(0).action());
-        assertEquals("Dog", timeline.get(1).className());
+            ev(2, EventType.EDIT, Map.of("class", "Dog")),
+            ev(4, EventType.CLASS_RENAMED, Map.of("class", "Puppy", "oldName", "Dog")));
+        List<DevelopmentTimeline.Entry> timeline = new DevelopmentTimeline().build(events);
+
+        assertEquals(4, timeline.size());
+        assertEquals("Class created", timeline.get(0).kind());
+        assertEquals("Method defined", timeline.get(1).kind());
+        assertEquals("void bark()", timeline.get(1).detail());
+        assertEquals("was Dog", timeline.get(2).detail());
+        assertEquals("Class deleted", timeline.get(3).kind());
     }
 }

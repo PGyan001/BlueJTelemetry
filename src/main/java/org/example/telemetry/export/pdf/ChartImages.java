@@ -29,3 +29,14 @@ final class ChartImages {
     static byte[] errorBars(Map<String, Long> errors) throws IOException {
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
         errors.forEach((category, count) -> dataset.addValue(count, "Errors", category));
+        return toPng(ChartFactory.createBarChart("Compilation errors by category",
+                "Category", "Count", dataset, PlotOrientation.HORIZONTAL, false, false, false));
+    }
+
+    private static byte[] toPng(JFreeChart chart) throws IOException {
+        BufferedImage image = chart.createBufferedImage(640, 380);
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        ImageIO.write(image, "png", out);
+        return out.toByteArray();
+    }
+}

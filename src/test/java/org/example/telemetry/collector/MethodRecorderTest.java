@@ -29,3 +29,13 @@ class MethodRecorderTest {
         r.sourceCompiled("A", "class A { void run() { } }");
         r.sourceCompiled("B", "class B { void run() { } }");
         assertEquals(2, log.countByType(EventType.METHOD_DEFINED));
+    }
+
+    @Test
+    void toleratesNullsAndRejectsNullSink() {
+        EventLog log = new EventLog();
+        new MethodRecorder(log).sourceCompiled(null, null);
+        assertEquals(0, log.getEvents().size());
+        assertThrows(NullPointerException.class, () -> new MethodRecorder(null));
+    }
+}

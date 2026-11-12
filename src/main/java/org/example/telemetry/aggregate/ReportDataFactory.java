@@ -28,3 +28,8 @@ public class ReportDataFactory {
                 count(list, EventType.RUNTIME_EXCEPTION),
                 idleThreshold);
     }
+
+    private static long count(List<TelemetryEvent> events, EventType type) {
+        return events.stream().filter(e -> e.type() == type).count();
+    }
+}

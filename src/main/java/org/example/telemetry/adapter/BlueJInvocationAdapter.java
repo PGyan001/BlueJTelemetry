@@ -21,7 +21,7 @@ public class BlueJInvocationAdapter implements InvocationFinishedListener {
             result == null ? "" : result.toString());
     }
 
-    private static ExitStatus toStatus(InvocationFinishedEvent.EventType type) {
+    static ExitStatus toStatus(InvocationFinishedEvent.EventType type) {
         if (type == null) {return ExitStatus.UNKNOWN; }
         return switch (type) {
             case NORMAL_EXIT -> ExitStatus.NORMAL;

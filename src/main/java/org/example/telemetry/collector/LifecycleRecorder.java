@@ -16,11 +16,16 @@ public class LifecycleRecorder {
 
     public LifecycleRecorder(EventSink sink) {this.sink = Objects.requireNonNull(sink);}
 
-    public void projectOpened(String project, boolean newlyCreated) {
+    public synchronized void projectOpened(String project, boolean newlyCreated) {
+        for (String name : preloaded) {
+            knownClasses.add(key(project, name));
+        }
+        preloaded.clear();
         sink.record(TelemetryEvent.of(newlyCreated ? EventType.PROJECT_CREATED : EventType.PROJECT_OPENED,Map.of("project", nz(project))));
     }
 
-    public void projectClosing(String project) {
+    public synchronized void projectClosing(String project) {
+        preloaded.clear();
         sink.record(TelemetryEvent.of(EventType.PROJECT_CLOSED, Map.of("project", nz(project))));
     }
 
@@ -34,7 +39,7 @@ public class LifecycleRecorder {
         Map<String, String> details = Map.of("project", project, "class", name, "compiled", String.valueOf(compiled));
 
         boolean isNew = knownClasses.add(key);
-        if (isNew && !preloaded.remove(name)) {
+        if (isNew) {
             sink.record(TelemetryEvent.of(EventType.CLASS_CREATED, details));
             settling.add(key);
             return;

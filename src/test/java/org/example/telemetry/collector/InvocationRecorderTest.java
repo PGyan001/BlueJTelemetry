@@ -60,4 +60,36 @@ class InvocationRecorderTest {
         assertEquals("INSTANCE_METHOD", log.getEvents().get(0).details().get("kind"));
         assertEquals(1, log.countByType(EventType.RUNTIME_EXCEPTION));
     }
+
+    @Test
+    void successfulStaticCallIsStaticMethod() {
+        EventLog log = new EventLog();
+        new InvocationRecorder(log).finished("Main", "main", "", new String[]{"{}"}, ExitStatus.NORMAL, "");
+        assertEquals("STATIC_METHOD", log.getEvents().get(0).details().get("kind"));
+    }
+
+    @Test
+    void methodReturningAnObjectIsNotMistakenForAConstructor() {
+        EventLog log = new EventLog();
+        new InvocationRecorder(log).finished("Human", "getFriend", "human1", new String[0],
+                ExitStatus.NORMAL, "BObject instanceName=null Class Name=Human");
+
+        var d = log.getEvents().get(0).details();
+        assertEquals("INSTANCE_METHOD", d.get("kind"));
+        assertEquals("BObject instanceName=null Class Name=Human", d.get("result"));
+    }
+
+    @Test
+    void unknownKindWhenBlueJGivesNoClues() {
+        assertEquals("STATIC_OR_UNKNOWN", InvocationRecorder.kind("", "", ""));
+        assertEquals("STATIC_OR_UNKNOWN", InvocationRecorder.kind("", "", null));
+    }
+
+    @Test
+    void terminatedRunIsRecordedWithoutException() {
+        EventLog log = new EventLog();
+        new InvocationRecorder(log).finished("Main", "run", "", null, ExitStatus.TERMINATED, "");
+        assertEquals("TERMINATED", log.getEvents().get(0).details().get("status"));
+        assertEquals(0, log.countByType(EventType.RUNTIME_EXCEPTION));
+    }
 }

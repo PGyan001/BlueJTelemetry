@@ -9,7 +9,6 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 
-/** Class creations, renames, deletions and method definitions in time order. */
 public class DevelopmentTimeline {
 
     public record Entry(Instant time, String kind, String className, String detail) {}

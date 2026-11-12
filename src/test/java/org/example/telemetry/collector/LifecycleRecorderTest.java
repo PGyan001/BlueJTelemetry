@@ -70,11 +70,52 @@ class LifecycleRecorderTest {
         EventLog log = new EventLog();
         LifecycleRecorder r = new LifecycleRecorder(log);
 
+        // real BlueJ order when reopening a project: class events (no project name) come first
         r.classStateChanged("", "Dog", true);
-        r.classStateChanged("P", "Dog", false); 
+        r.projectOpened("P", false);
+        r.classStateChanged("P", "Dog", false);
 
         assertEquals(0, log.countByType(EventType.CLASS_CREATED));
         assertEquals(1, log.countByType(EventType.CLASS_MODIFIED));
+    }
+
+    @Test
+    void reopenedClassesDoNotSuppressCreationInAnotherProject() {
+        EventLog log = new EventLog();
+        LifecycleRecorder r = new LifecycleRecorder(log);
+
+        r.classStateChanged("", "Dog", true);   // project A reopened, Dog never edited
+        r.projectOpened("A", false);
+        r.projectClosing("A");
+
+        r.projectOpened("B", true);
+        r.classStateChanged("B", "Dog", true);  // brand new class that happens to share the name
+
+        assertEquals(1, log.countByType(EventType.CLASS_CREATED));
+        assertEquals(0, log.countByType(EventType.CLASS_MODIFIED));
+    }
+
+    @Test
+    void closingAProjectDiscardsUnclaimedAnnouncements() {
+        EventLog log = new EventLog();
+        LifecycleRecorder r = new LifecycleRecorder(log);
+        r.classStateChanged("", "Ghost", true);
+        r.projectClosing("X");
+        r.projectOpened("Y", false);
+        r.classStateChanged("Y", "Ghost", true);
+        assertEquals(1, log.countByType(EventType.CLASS_CREATED));
+    }
+
+    @Test
+    void renamedClassSettlesBeforeNextRealEdit() {
+        EventLog log = new EventLog();
+        LifecycleRecorder r = new LifecycleRecorder(log);
+        r.classStateChanged("P", "Cat", true);
+        r.classRenamed("P", "Cat", "Cat2");
+        r.classStateChanged("P", "Cat2", false);  // BlueJ's template change after rename: swallowed
+        r.classStateChanged("P", "Cat2", false);  // genuine edit
+
+        assertEquals(1, log.countByType(EventType.EDIT));
     }
 
     @Test

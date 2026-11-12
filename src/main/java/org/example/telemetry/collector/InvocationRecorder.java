@@ -20,7 +20,7 @@ public class InvocationRecorder {
         String cls = nz(className);
         String method = nz(methodName);
         String object = nz(objectName);
-        String kind = kind(object, result);
+        String kind = kind(object, method, result);
         ExitStatus st = status == null ? ExitStatus.UNKNOWN : status;
         String summary = "CONSTRUCTOR".equals(kind) ? "" : truncate(result);
 
@@ -42,9 +42,19 @@ public class InvocationRecorder {
         }
     }
 
-    private static String kind(String object, String result) {
-        if (result != null && result.startsWith("BObject")) {return "CONSTRUCTOR";}
-        return object.isEmpty() ? "STATIC_OR_UNKNOWN" : "INSTANCE_METHOD";
+    static String kind(String object, String method, String result) {
+        boolean hasObject = !object.isEmpty();
+        boolean hasMethod = !method.isEmpty();
+        if (hasMethod) {
+            return hasObject ? "INSTANCE_METHOD" : "STATIC_METHOD";
+        }
+        if (hasObject) {
+            return "INSTANCE_METHOD";
+        }
+        if (result != null && result.startsWith("BObject")) {
+            return "CONSTRUCTOR";
+        }
+        return "STATIC_OR_UNKNOWN";
     }
 
     private static String nz(String s) {return s == null ? "" : s;}
