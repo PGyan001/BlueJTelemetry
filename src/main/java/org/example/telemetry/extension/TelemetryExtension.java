@@ -13,6 +13,7 @@ import org.example.telemetry.events.CompositeSink;
 import org.example.telemetry.events.EventLog;
 import org.example.telemetry.events.EventSink;
 import org.example.telemetry.export.SessionExporter;
+import org.example.telemetry.collector.MethodRecorder;
 import java.nio.file.Path;
 import java.time.Instant;
 import java.util.UUID;
@@ -40,7 +41,7 @@ public class TelemetryExtension extends Extension{
         LifecycleRecorder lifecycle = new LifecycleRecorder(sink);
         bluej.addPackageListener(new BlueJPackageAdapter(lifecycle, autoExport));
         bluej.addClassListener(new BlueJClassAdapter(lifecycle));
-        bluej.addCompileListener(new BlueJCompileAdapter(new CompileRecorder(sink)));
+        bluej.addCompileListener(new BlueJCompileAdapter(new CompileRecorder(sink), new MethodRecorder(sink)));
         bluej.addInvocationFinishedListener(new BlueJInvocationAdapter(new InvocationRecorder(sink)));
         bluej.setMenuGenerator(new TelemetryMenuGenerator(exporter));
     }
